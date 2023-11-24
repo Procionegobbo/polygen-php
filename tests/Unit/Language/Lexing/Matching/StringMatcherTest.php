@@ -26,7 +26,7 @@ class StringMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function string_provider()
+    static function string_provider()
     {
         return [
             ['""', Token::terminatingSymbol('')],
@@ -51,7 +51,7 @@ class StringMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function other_symbols_matcher_provider()
+    static function other_symbols_matcher_provider()
     {
         return [
             ['.('],
@@ -76,7 +76,7 @@ class StringMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function escape_provider()
+    static function escape_provider()
     {
         return [
             ['"\""', Token::terminatingSymbol('"')],

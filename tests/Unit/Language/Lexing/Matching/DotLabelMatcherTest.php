@@ -25,7 +25,7 @@ class DotLabelMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function dot_label_matcher_provider()
+    static function dot_label_matcher_provider()
     {
         return [
             ['.Hey', Token::dotLabel('Hey')],
@@ -50,7 +50,7 @@ class DotLabelMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function other_symbols_matcher_provider()
+    static function other_symbols_matcher_provider()
     {
         return [
             ['.('],

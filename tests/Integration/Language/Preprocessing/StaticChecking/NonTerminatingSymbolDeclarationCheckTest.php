@@ -16,7 +16,7 @@ class NonTerminatingSymbolDeclarationCheckTest extends TestCase
     use StaticCheckUtils;
     use StreamUtils;
 
-    public function provider_undefined_non_terminating_symbol()
+    static function provider_undefined_non_terminating_symbol()
     {
         return [
             [

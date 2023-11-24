@@ -25,7 +25,7 @@ class LongSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function long_symbols_matcher_provider()
+    static function long_symbols_matcher_provider()
     {
         return [
             [':=', Token::assignment()],
@@ -50,7 +50,7 @@ class LongSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function other_symbols_matcher_provider()
+    static function other_symbols_matcher_provider()
     {
         return [
             ['<'],

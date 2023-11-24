@@ -52,7 +52,7 @@ GRAMMAR
     /**
      * @return \string[][]
      */
-    public function provider_selection_feed()
+    static function provider_selection_feed()
     {
         // At the time of writing, most of these numbers produced invalid results.
         return [
@@ -146,7 +146,7 @@ GRAMMAR
         $this->assertContains($generated, $acceptable);
     }
 
-    public function provider_label_propagation()
+    static function provider_label_propagation()
     {
         // At the time of writing, these seeds generated all possible productions.
         return [
@@ -266,7 +266,7 @@ GRAMMAR
         $this->assertEquals($generated, 'b', $context->getSeed());
     }
 
-    public function provider_label_selection_processing_order()
+    static function provider_label_selection_processing_order()
     {
         return [
             ['1'],
@@ -308,7 +308,7 @@ GRAMMAR
         $this->assertEquals($generated, 'a aa b bb');
     }
 
-    public function provider_left_to_right_selection_2()
+    static function provider_left_to_right_selection_2()
     {
         return [
             ['1'],
@@ -411,7 +411,7 @@ GRAMMAR
         $this->assertContains($generated, $acceptable, $context->getSeed());
     }
 
-    public function provider_multiple_label_selection()
+    static function provider_multiple_label_selection()
     {
         return [
             ['1'],
@@ -453,7 +453,7 @@ GRAMMAR
         $this->assertContains($generated, $acceptable, "Positional selection failed for seed {$context->getSeed()}");
     }
 
-    public function provider_positional_selection()
+    static function provider_positional_selection()
     {
         return [
             ['1'],

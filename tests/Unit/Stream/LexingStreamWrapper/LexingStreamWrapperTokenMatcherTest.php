@@ -104,7 +104,7 @@ class LexingStreamWrapperTokenMatcherTest extends TestCase
         $this->assertEquals($isEOF, $this->sut->isDoneMatching());
     }
 
-    public function provider_boolean()
+    static function provider_boolean()
     {
         return [
             [true],

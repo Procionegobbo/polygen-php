@@ -38,7 +38,7 @@ class LexerTest extends TestCase
     /**
      * @return array
      */
-    public function valid_stream_provider()
+    static function valid_stream_provider()
     {
         return [
             [

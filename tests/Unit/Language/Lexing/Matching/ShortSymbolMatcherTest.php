@@ -27,7 +27,7 @@ class ShortSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function short_symbols_matcher_provider()
+    static function short_symbols_matcher_provider()
     {
         return [
             ['(', Token::leftBracket()],
@@ -79,7 +79,7 @@ class ShortSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function other_symbols_matcher_provider()
+    static function other_symbols_matcher_provider()
     {
         return [
             ['@'],

@@ -24,7 +24,7 @@ class WhitespaceMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function whitespace_provider()
+    static function whitespace_provider()
     {
         return [
             [' '],
@@ -50,7 +50,7 @@ class WhitespaceMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function non_whitespace_provider()
+    static function non_whitespace_provider()
     {
         return [
             ['a'],

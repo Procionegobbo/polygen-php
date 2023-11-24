@@ -28,7 +28,7 @@ class CommentMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function valid_comment_string_provider()
+    static function valid_comment_string_provider()
     {
         return [
             ['(*this is a comment*)', 'this is a comment'],
@@ -53,7 +53,7 @@ class CommentMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function invalid_comment_string_provider()
+    static function invalid_comment_string_provider()
     {
         return [
             ['( * this is not a comment*)'],

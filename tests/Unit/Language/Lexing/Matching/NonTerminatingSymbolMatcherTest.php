@@ -25,7 +25,7 @@ class NonTerminatingSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function valid_non_terminating_symbol_provider()
+    static function valid_non_terminating_symbol_provider()
     {
         return [
             ['A', Token::nonTerminatingSymbol('A')],
@@ -52,7 +52,7 @@ class NonTerminatingSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function invalid_string_provider()
+    static function invalid_string_provider()
     {
         return [
             ['(*this is a comment*)'],

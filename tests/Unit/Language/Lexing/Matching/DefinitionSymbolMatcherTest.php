@@ -26,7 +26,7 @@ class DefinitionSymbolMatcherTest extends TestCase
      * @dataProvider not_a_definition_symbol_provider
      * @param $string
      */
-    public function it_does_not_match_other_strings($string)
+    function it_does_not_match_other_strings($string)
     {
         $SUT = new DefinitionSymbolMatcher();
         $result = $SUT->match(MatcherInputHelper::get($string));
@@ -36,7 +36,7 @@ class DefinitionSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function not_a_definition_symbol_provider()
+    static function not_a_definition_symbol_provider()
     {
         return [
             [': : ='],

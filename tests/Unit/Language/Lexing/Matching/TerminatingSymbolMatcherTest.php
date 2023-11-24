@@ -25,7 +25,7 @@ class TerminatingSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function valid_terminating_symbol_provider()
+    static function valid_terminating_symbol_provider()
     {
         return [
             ['a', Token::terminatingSymbol('a')],
@@ -53,7 +53,7 @@ class TerminatingSymbolMatcherTest extends TestCase
     /**
      * @return array
      */
-    public function invalid_string_provider()
+    static function invalid_string_provider()
     {
         return [
             ['(*this is a comment*)'],
