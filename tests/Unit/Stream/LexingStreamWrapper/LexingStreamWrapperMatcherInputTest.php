@@ -28,7 +28,7 @@ class LexingStreamWrapperMatcherInputTest extends TestCase
      */
     private $sut;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->stream = Mockery::mock(StreamInterface::class);

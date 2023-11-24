@@ -343,7 +343,7 @@ GRAMMAR
         // This seed caused an invalid generation at the time of writing
         $generated = $polygen->generate($document, $context = Context::get(Document::START));
 
-        $this->assertRegExp('{(0|[1-9][0-9]*)}', $generated, $context->getSeed());
+        $this->assertMatchesRegularExpression('{(0|[1-9][0-9]*)}', $generated, $context->getSeed());
     }
 
     /**

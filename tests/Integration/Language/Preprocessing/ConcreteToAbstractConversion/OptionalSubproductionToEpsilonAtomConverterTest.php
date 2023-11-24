@@ -20,7 +20,7 @@ class OptionalSubproductionToEpsilonAtomConverterTest extends TestCase
      */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->subject = $this->given_a_converter_with(

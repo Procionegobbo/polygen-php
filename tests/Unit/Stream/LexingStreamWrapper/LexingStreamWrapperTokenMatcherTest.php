@@ -34,7 +34,7 @@ class LexingStreamWrapperTokenMatcherTest extends TestCase
      */
     private $matcherInterface;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->stream = Mockery::mock(StreamInterface::class);

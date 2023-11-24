@@ -21,7 +21,7 @@ class ReferenceGraphBuilderTest extends TestCase
      */
     private $identifierFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->identifierFactory = Mockery::mock(IdentifierFactory::class);

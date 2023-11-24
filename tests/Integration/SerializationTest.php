@@ -25,6 +25,6 @@ class SerializationTest extends TestCase
 
         $string = (new Polygen())->generate($unserialized_document, $context = Context::get());
 
-        $this->assertRegExp('{^[0-9a-f]{7} ELD-[^0][0-9]*:}', $string, $context->getSeed());
+        $this->assertMatchesRegularExpression('{^[0-9a-f]{7} ELD-[^0][0-9]*:}', $string, $context->getSeed());
     }
 }

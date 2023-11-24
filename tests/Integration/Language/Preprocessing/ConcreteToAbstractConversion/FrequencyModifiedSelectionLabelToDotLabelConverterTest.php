@@ -28,7 +28,7 @@ class FrequencyModifiedSelectionLabelToDotLabelConverterTest extends TestCase
      */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->identifierFactory = \Mockery::mock(IdentifierFactory::class);
