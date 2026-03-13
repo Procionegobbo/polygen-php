@@ -200,6 +200,48 @@ php simple_test.php
 php test.php
 ```
 
+## Future Developments
+
+### Numeric Label Selectors
+
+The original OCaml Polygen supports **numeric label selectors** - using numeric indices as shortcuts for selecting alternatives:
+
+```pml
+% Original Polygen (not yet supported in PHP):
+Item ::= 1: apple | 2: banana | 3: orange ;
+S ::= I like Item.1 ;  % Selects "apple"
+```
+
+This feature is used in approximately 5 real-world grammar files (3.4% of test suite). Implementation would require:
+
+1. **Lexer enhancement**: Support digit-only label tokens
+2. **Parser update**: Allow numeric selectors in label position
+3. **Preprocessor mapping**: Map numeric indices to internal label representation
+4. **Generator support**: Resolve numeric labels to alternatives
+
+**Status**: Not implemented due to:
+- Reduced readability compared to named labels
+- Low usage in real-world grammars (3.4%)
+- Potential for confusion with line numbers and array indices
+- Standard PML uses identifier-based labeling
+
+**Workaround**: Convert numeric labels to identifier-based labels:
+```pml
+% Polygen PHP (supported):
+Item ::= apple: apple | banana: banana | orange: orange ;
+S ::= I like Item.apple ;  % Explicitly named
+```
+
+### Advanced Features
+
+Other original Polygen features that could be added:
+
+- **Weighted multi-label selection**: `.(++A|B)` syntax for prioritizing label options
+- **Chained numeric selection**: `.1.2.3` to select union of alternatives
+- **Numeric alternative unions**: Selecting multiple alternatives by index in one selector
+
+These remain low-priority due to niche usage and better alternatives available through standard PML syntax.
+
 ## Acknowledgments
 
 This PHP 8.4+ implementation is a port of the original **Polygen** project by **[Alvi Sansone](https://github.com/alvisespano)** ([@alvisespano](https://github.com/alvisespano)).
