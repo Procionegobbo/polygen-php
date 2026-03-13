@@ -18,7 +18,7 @@ This project is a tribute to the legendary **Polygen**. It was created almost en
 - Scoped redefinitions with inline declarations `(X := value; body)`
 - Deep unfold operator `>>...<<` for inlining alternatives
 - Terminal operators: epsilon `_`, concatenation `^`, capitalization `\`
-- Non-terminal references and sub-grammars
+- Non-terminal references and sub-grammarsIl
 - Label-based filtering and selection
 
 ## Installation
@@ -288,7 +288,7 @@ This implementation includes:
 
 ## Acknowledgments
 
-This PHP 8.4+ implementation is a port of the original **Polygen** project by **[Alvi Sansone](https://github.com/alvisespano)** ([@alvisespano](https://github.com/alvisespano)).
+This PHP 8.4+ implementation is a port of the original **Polygen** project by **[Alvise Spanò](https://github.com/alvisespano)** ([@alvisespano](https://github.com/alvisespano)).
 
 The original Polygen is an OCaml implementation of a random sentence generator based on BNF-like grammars. This port preserves the core architecture and grammar syntax while adapting it for modern PHP with strict typing, sealed classes, and zero external dependencies.
 
