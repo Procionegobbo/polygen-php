@@ -246,6 +246,46 @@ Other original Polygen features that could be added:
 
 These remain low-priority due to niche usage and better alternatives available through standard PML syntax.
 
+## PML Specification & Resources
+
+### Official Documentation
+
+- **Original Polygen Project**: https://github.com/alvisespano/Polygen
+  - Full OCaml source code and documentation
+  - Original grammar specification
+  - Example grammars and usage guides
+
+- **Polygen Homepage**: http://www.polygen.org/
+  - Project overview and history
+  - Documentation and papers by Alvise Spanò
+
+### PML Language Reference
+
+The **Polygen Meta Language (PML)** is documented in the original Polygen repository:
+
+- **Grammar Syntax**: See `docs/` or inline documentation in original repository
+- **Tutorial & Examples**: Available in the original Polygen distribution
+- **Grammar Collection**: The `grm/` directory contains 150+ example grammars in Italian, English, and French
+
+### Related Resources
+
+- **BNF (Backus-Naur Form)**: https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form
+  - Foundation for PML grammar syntax
+  - Standard notation for context-free grammars
+
+- **Context-Free Grammars**: https://en.wikipedia.org/wiki/Context-free_grammar
+  - Theoretical foundation for Polygen's approach
+
+### Polygen PHP Documentation
+
+This implementation includes:
+- **README.md** - Overview and features
+- **QUICKSTART.md** - Quick setup and basic examples
+- **INDEX.md** - File structure and architecture
+- **CLAUSE.md** - Detailed implementation notes
+- **GRAMMAR_TEST_RESULTS.md** - Test results against 150+ grammars
+- **UNSUPPORTED_SYNTAX_ANALYSIS.md** - Details on unsupported features
+
 ## Acknowledgments
 
 This PHP 8.4+ implementation is a port of the original **Polygen** project by **[Alvi Sansone](https://github.com/alvisespano)** ([@alvisespano](https://github.com/alvisespano)).
