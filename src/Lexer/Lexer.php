@@ -45,7 +45,7 @@ final class Lexer
         $column = $this->column;
 
         // Handle remaining whitespace (newlines)
-        if (in_array($char, ['\n', '\r', null], true)) {
+        if (in_array($char, ["\n", "\r", null], true)) {
             return null; // Skip newlines and empty input
         }
 
@@ -200,7 +200,7 @@ final class Lexer
         if (ctype_space($char) || ord($char) < 33) {
             $this->pos++;
             $this->column++;
-            if ($char === '\n') {
+            if ($char === "\n") {
                 $this->line++;
                 $this->column = 1;
             }
@@ -334,11 +334,11 @@ final class Lexer
     {
         while ($this->pos < strlen($this->input)) {
             $char = $this->current();
-            if ($char === ' ' || $char === '\t') {
+            if ($char === ' ' || $char === "\t") {
                 $this->pos++;
                 $this->column++;
-            } elseif ($char === '\n' || $char === '\r') {
-                if ($char === '\r' && $this->peek() === '\n') {
+            } elseif ($char === "\n" || $char === "\r") {
+                if ($char === "\r" && $this->peek() === "\n") {
                     $this->pos++; // Skip \r in \r\n
                 }
                 $this->line++;

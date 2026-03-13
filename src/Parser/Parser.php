@@ -90,11 +90,11 @@ final class Parser
                 $seqs[] = new SeqNode($seq->label, $seq->atoms);
             }
         } elseif ($weight < 0) {
-            // Remove if weight is negative (can't remove, so just return empty or single)
+            // Remove if weight is negative (skip this alternative entirely)
             $seqs = [];
         }
 
-        return $seqs ?: [$seq];
+        return $seqs;
     }
 
     private function parseSeq(): SeqNode
@@ -121,6 +121,7 @@ final class Parser
             && !$this->isAtType(TokenType::KET)
             && !$this->isAtType(TokenType::CKET)
             && !$this->isAtType(TokenType::SQKET)
+            && !$this->isAtType(TokenType::LTLT)
             && !$this->isAtType(TokenType::EOF)
         ) {
             if ($this->checkType(TokenType::COMMA)) {
@@ -161,7 +162,7 @@ final class Parser
                 foreach ($labels as $lbl) {
                     $subSeqs[] = new SeqNode($lbl, [new AtomSel($atom, $lbl)]);
                 }
-                $atom = new AtomSub([], new ProdNode($subSeqs));
+                $atom = new AtomSub([], new ProdNode($subSeqs), selectorSub: true);
             }
         }
 
@@ -175,8 +176,8 @@ final class Parser
             $this->consume();
             $sub = $this->parseSub();
             $this->expectType(TokenType::LTLT);
-            // Unfold: inline all alternatives
-            return $this->expandUnfold($sub);
+            // Unfold: inline all alternatives into enclosing sequence
+            return new AtomSub([], $sub, unfolded: true);
         }
 
         // Lock: <...
@@ -264,7 +265,7 @@ final class Parser
         // Subexpression: (sub), [sub], {sub}
         if ($this->checkType(TokenType::BRA)) {
             $this->consume();
-            $sub = $this->parseSub();
+            [$decls, $prod] = $this->parseSubFull();
             $this->expectType(TokenType::KET);
 
             // Check for modifiers: +, *
@@ -272,54 +273,59 @@ final class Parser
                 $this->consume();
                 // (sub)+ → sub (sub)*
                 // In simplified form: just return the sub
-                return new AtomSub([], $sub);
+                return new AtomSub($decls, $prod);
             }
 
-            return new AtomSub([], $sub);
+            return new AtomSub($decls, $prod);
         }
 
         if ($this->checkType(TokenType::SQBRA)) {
             $this->consume();
-            $sub = $this->parseSub();
+            [$decls, $prod] = $this->parseSubFull();
             $this->expectType(TokenType::SQKET);
 
             // [sub] → (sub | _)
-            $seqs = $sub->seqs;
+            $seqs = $prod->seqs;
             $seqs[] = new SeqNode(null, [new AtomTerminal(new TerminalEpsilon())]);
-            return new AtomSub([], new ProdNode($seqs));
+            return new AtomSub($decls, new ProdNode($seqs));
         }
 
         if ($this->checkType(TokenType::CBRA)) {
             $this->consume();
-            $sub = $this->parseSub();
+            [$decls, $prod] = $this->parseSubFull();
             $this->expectType(TokenType::CKET);
 
             // {sub} is mobile (shuffle)
-            return new AtomSub([], $sub);
+            return new AtomSub($decls, $prod, mobile: true);
         }
 
         throw $this->error("Expected terminal or unfoldable");
     }
 
-    private function parseSub(): ProdNode
+    /**
+     * Parse inline declarations followed by a production
+     * @return array{0: DeclNode[], 1: ProdNode}
+     */
+    private function parseSubFull(): array
     {
-        // sub can be:
-        //   - prod
-        //   - NONTERM ::= prod EOL sub
-        //   - NONTERM := prod EOL sub
-        //   - import ...
+        $decls = [];
 
-        // Peek to see if we have a declaration
-        if ($this->checkType(TokenType::NONTERM)) {
+        // Detect inline declarations: NONTERM followed by DEF (::=) or ASSIGN (:=)
+        while ($this->checkType(TokenType::NONTERM)) {
             $peek = $this->peekNext();
-            if ($peek && ($peek->type === TokenType::DEF || $peek->type === TokenType::ASSIGN)) {
-                // This is a scoped declaration
-                // We'll handle this in parseProd context
-                // For now, just parse as prod
+            if ($peek === null || ($peek->type !== TokenType::DEF && $peek->type !== TokenType::ASSIGN)) {
+                break;
             }
+            $decls[] = $this->parseDecl();
         }
 
-        return $this->parseProd();
+        return [$decls, $this->parseProd()];
+    }
+
+    private function parseSub(): ProdNode
+    {
+        [, $prod] = $this->parseSubFull();
+        return $prod;
     }
 
     private function parseExpectLabel(): string

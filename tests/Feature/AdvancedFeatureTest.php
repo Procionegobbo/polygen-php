@@ -160,6 +160,85 @@ GRAMMAR;
 
             expect($aRatio)->toBeGreaterThan(0.7);
         });
+
+        it('negative weight excludes alternative from selection', function () {
+            $grammar = 'S ::= - excluded | included ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 50));
+
+            expect($outputs)->toContain('included');
+            expect($outputs)->not->toContain('excluded');
+        });
+    });
+
+    describe('Mobile Groups', function () {
+        it('generates mobile groups in multiple orders', function () {
+            $grammar = 'S ::= { a b } ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 100));
+
+            expect($outputs)->toContain('a b');
+            expect($outputs)->toContain('b a');
+        });
+
+        it('mobile group with three elements', function () {
+            $grammar = 'S ::= { a b c } ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 200));
+            $unique = array_unique($outputs);
+
+            // Should have multiple different permutations
+            expect(count($unique))->toBeGreaterThanOrEqual(2);
+        });
+    });
+
+    describe('Multi-label Selectors', function () {
+        it('multi-label selector chooses among labels', function () {
+            $grammar = 'S ::= Noun.(M|F) ; Noun ::= M: man | F: woman ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 50));
+
+            expect($outputs)->toContain('man');
+            expect($outputs)->toContain('woman');
+        });
+
+        it('chained multi-label selectors work', function () {
+            $grammar = 'S ::= Word.(A|B) ; Word ::= A: alpha | B: beta ;';
+            $output = generateText($grammar);
+
+            expect($output)->toBeIn(['alpha', 'beta']);
+        });
+    });
+
+    describe('Scoped Redefinitions', function () {
+        it('handles scoped assignment in sub-expression', function () {
+            $grammar = 'S ::= (X := hello ; X world) ;';
+            $output = generateText($grammar);
+
+            expect($output)->toBe('hello world');
+        });
+
+        it('handles scoped definition in sub-expression', function () {
+            $grammar = 'S ::= (X ::= a | b ; X X) ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 50));
+
+            // Should have variation since X is a definition
+            expect(count(array_unique($outputs)))->toBeGreaterThanOrEqual(2);
+        });
+    });
+
+    describe('Deep Unfold', function () {
+        it('deep unfold inlines alternatives into parent sequence', function () {
+            $grammar = 'S ::= x >>(a | b)<< z ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 50));
+
+            expect($outputs)->toContain('x a z');
+            expect($outputs)->toContain('x b z');
+        });
+
+        it('deep unfold with multiple atom context', function () {
+            $grammar = 'S ::= m n >>(a | b)<< x y ;';
+            $outputs = array_map(fn() => generateText($grammar), range(1, 50));
+
+            expect($outputs)->toContain('m n a x y');
+            expect($outputs)->toContain('m n b x y');
+        });
     });
 
     describe('Special Cases', function () {

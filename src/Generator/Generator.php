@@ -214,7 +214,9 @@ final class Generator
     {
         // Declare local environment with sub's declarations
         $localEnv = $this->declareLocal($env, $lbs, $sub->decls);
-        return $this->genProd($localEnv, $lbs, $sub->prod);
+        // Selector-expanded subs use internal labeling — don't bleed outer labels in
+        $innerLbs = $sub->selectorSub ? new LabelSet() : $lbs;
+        return $this->genProd($localEnv, $innerLbs, $sub->prod);
     }
 
     /**

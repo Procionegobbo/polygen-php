@@ -277,6 +277,22 @@ describe('Lexer', function () {
             expect($tokens[0]->value)->toBe('hello');
             expect($tokens[1]->value)->toBe('world');
         });
+
+        it('handles real tab characters between tokens', function () {
+            $lexer = new Lexer("hello\t\tworld");
+            $tokens = $lexer->tokenize();
+
+            expect($tokens[0]->value)->toBe('hello');
+            expect($tokens[1]->value)->toBe('world');
+        });
+
+        it('handles real newline between tokens', function () {
+            $lexer = new Lexer("hello\nworld");
+            $tokens = $lexer->tokenize();
+
+            expect($tokens[0]->value)->toBe('hello');
+            expect($tokens[1]->value)->toBe('world');
+        });
     });
 
     describe('Complex Grammar Rules', function () {

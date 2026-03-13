@@ -86,6 +86,11 @@ final class Preprocessor
      */
     private function processAtom(AtomNode $atom): array
     {
+        // Special case: unfolded subs return multiple alternatives
+        if ($atom instanceof AtomSub && $atom->unfolded) {
+            return $this->processUnfoldedSub($atom);
+        }
+
         $processed = match (true) {
             $atom instanceof AtomTerminal =>
                 $atom,
@@ -111,9 +116,57 @@ final class Preprocessor
 
     private function processSub(AtomSub $sub): AtomNode
     {
+        if ($sub->mobile) {
+            return $this->processMobileSub($sub);
+        }
+
         // Process the sub-grammar
         $processedProd = $this->processProd($sub->prod);
         return new AtomSub($sub->decls, $processedProd);
+    }
+
+    private function processMobileSub(AtomSub $sub): AtomNode
+    {
+        // Process the sub-grammar first
+        $processedProd = $this->processProd($sub->prod);
+
+        // Generate all permutations for each sequence
+        $permSeqs = [];
+        foreach ($processedProd->seqs as $seq) {
+            $permutations = $this->permute($seq->atoms);
+            foreach ($permutations as $perm) {
+                $permSeqs[] = new SeqNode($seq->label, $perm);
+            }
+        }
+
+        return new AtomSub($sub->decls, new ProdNode($permSeqs));
+    }
+
+    /**
+     * Deep unfold: expand alternatives into parent sequence
+     * Returns one alternative per alternative in the unfolded sub's prod
+     * @return array<int, AtomNode[]>
+     */
+    private function processUnfoldedSub(AtomSub $sub): array
+    {
+        $processedProd = $this->processProd($sub->prod);
+        $alternatives = [];
+
+        foreach ($processedProd->seqs as $seq) {
+            // Process each atom in the sequence (they may expand to multiple alternatives)
+            $atomResults = [];
+            foreach ($seq->atoms as $atom) {
+                $atomResults[] = $this->processAtom($atom);
+            }
+
+            // Combine all atom alternatives into alternatives for this sequence
+            $combos = $this->comb($atomResults);
+            foreach ($combos as $combo) {
+                $alternatives[] = $combo;
+            }
+        }
+
+        return $alternatives ?: [[]];
     }
 
     /**
