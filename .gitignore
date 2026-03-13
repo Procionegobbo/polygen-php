@@ -2,6 +2,9 @@
 /vendor/
 composer.lock
 
+# Claude Code
+/.claude/
+
 # IDE
 .idea/
 .vscode/
