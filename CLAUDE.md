@@ -12,6 +12,14 @@ Key facts:
 - **Key Feature**: Generates random text from context-free grammars with weighted alternatives, optional groups, and terminal operators
 - **Architecture**: Clean pipeline (Lexer → Parser → Preprocessor → Generator)
 
+## Package Structure
+
+**Recent Refactoring (Current)**: This is a standard Composer package with:
+- PSR-4 autoloading from `src/` directory
+- One class per file (split AST files: TerminalNode, AtomNode, DeclNode, BindMode each have 4-5 separate files)
+- No hand-rolled autoloaders
+- Ready for Packagist publication: `composer require procionegobbo/polygen-php`
+
 ## Commands
 
 ### Development Setup
@@ -89,23 +97,23 @@ Grammar String
 
 ### Core Components
 
-1. **Lexer** (`Lexer/`)
+1. **Lexer** (`src/Lexer/`)
    - Tokenizes grammar strings into tokens
    - Handles quoted strings, operators, labels, nested comments
    - Tracks line/column for error reporting
    - Key files: `Lexer.php`, `Token.php`, `TokenType.php`
 
-2. **Parser** (`Parser/`)
+2. **Parser** (`src/Parser/`)
    - Recursive-descent parser that builds an Abstract Syntax Tree (Absyn0)
    - Parses PML grammar syntax (rules, alternatives, operators, grouping)
-   - Key files: `Parser.php`, `Ast/` (TerminalNode, AtomNode, SeqNode, ProdNode, DeclNode)
+   - Key files: `Parser.php`, `Ast/` (TerminalNode, AtomNode, SeqNode, ProdNode, DeclNode, BindMode)
 
-3. **Preprocessor** (`Preprocessor/`)
+3. **Preprocessor** (`src/Preprocessor/`)
    - Optimization pass that converts Absyn0 to Absyn1
    - Unfold expansion, cartesian product generation, mobile permutation
    - Flattens AST for efficient generation
 
-4. **Generator** (`Generator/`)
+4. **Generator** (`src/Generator/`)
    - Runtime engine that evaluates the optimized AST
    - Implements weighted random selection, label filtering, memoization
    - Handles environment binding (definitions vs assignments)
@@ -113,7 +121,7 @@ Grammar String
 
 ### Public API
 
-- **`Polygen.php`**: Main facade with two key methods
+- **`src/Polygen.php`**: Main facade with two key methods
   - `__construct(string $grammar)`: Parse grammar (throws RuntimeException on invalid syntax)
   - `generate(string $startSymbol = 'S', array $labels = []): string`: Generate random text
 
@@ -163,7 +171,7 @@ The test suite is organized in `tests/` using Pest framework:
   - `BasicGrammarTest.php`: Basic features (~30)
   - `AdvancedFeatureTest.php`: Advanced features (~25)
   - `APITest.php`: Public API (~25)
-- **Total**: ~120 test cases
+- **Total**: 127 test cases (all passing)
 
 Key test files and helpers in `tests/Pest.php`:
 - `createPolygen($grammar)` - Create Polygen instance
@@ -174,12 +182,21 @@ Key test files and helpers in `tests/Pest.php`:
 
 ### Parser Strategy
 
-The parser uses recursive descent and builds an AST. Key classes:
-- `DeclNode` - Top-level declarations (rules/assignments)
-- `ProdNode` - Production (list of alternative sequences)
-- `SeqNode` - Sequence with label and usage counter
-- `AtomNode` - Sealed hierarchy: Terminal, NonTerm, Sel, Sub
-- `TerminalNode` - Sealed enum: Epsilon, Concat, Capitalize, Term
+The parser uses recursive descent and builds an AST. Key classes in `src/Parser/Ast/`:
+- **`DeclNode.php`** - Top-level declarations (rules/assignments)
+- **`BindMode.php`** - Enum for binding mode (Definition vs Assignment)
+- **`ProdNode.php`** - Production (list of alternative sequences)
+- **`SeqNode.php`** - Sequence with label and usage counter
+- **`TerminalNode.php`** (abstract) with 4 implementations:
+  - `TerminalEpsilon.php` - Epsilon (empty)
+  - `TerminalConcat.php` - Concatenation operator
+  - `TerminalCapitalize.php` - Capitalization operator
+  - `TerminalTerm.php` - String literal
+- **`AtomNode.php`** (abstract) with 4 implementations:
+  - `AtomTerminal.php` - Wraps a TerminalNode
+  - `AtomNonTerm.php` - Reference to a non-terminal symbol
+  - `AtomSel.php` - Label selection on an atom
+  - `AtomSub.php` - Sub-expression (nested scope)
 
 ### Generator Behavior
 
@@ -199,7 +216,7 @@ The parser uses recursive descent and builds an AST. Key classes:
 1. **When modifying the pipeline**: Keep Lexer → Parser → Preprocessor → Generator separation clear
 2. **When adding grammar features**: Add test cases in appropriate test file first, then implement in Parser and Generator
 3. **When optimizing**: Modify Preprocessor, ensure Generator still handles all node types
-4. **For new operators**: Update TokenType, Lexer, Parser, AST nodes, and Generator in sequence
+4. **For new operators**: Update `src/Lexer/TokenType.php`, `src/Lexer/Lexer.php`, `src/Parser/Parser.php`, AST nodes in `src/Parser/Ast/`, and `src/Generator/Generator.php` in sequence
 5. **Test coverage**: Aim for 85%+ coverage (use `./vendor/bin/pest --coverage`)
 
 ## Documentation
@@ -214,12 +231,12 @@ The parser uses recursive descent and builds an AST. Key classes:
 
 ### Add a new grammar operator
 
-1. Add token type to `Lexer/TokenType.php`
-2. Update `Lexer/Lexer.php` to recognize it
-3. Add parsing logic to `Parser/Parser.php`
-4. Create/update AST node in `Parser/Ast/`
-5. Handle in `Preprocessor/Preprocessor.php` (if optimization needed)
-6. Implement evaluation in `Generator/Generator.php`
+1. Add token type to `src/Lexer/TokenType.php`
+2. Update `src/Lexer/Lexer.php` to recognize it
+3. Add parsing logic to `src/Parser/Parser.php`
+4. Create/update AST node in `src/Parser/Ast/`
+5. Handle in `src/Preprocessor/Preprocessor.php` (if optimization needed)
+6. Implement evaluation in `src/Generator/Generator.php`
 7. Add tests in `tests/Feature/AdvancedFeatureTest.php` or `tests/Unit/LexerTest.php`
 
 ### Fix a parsing issue
@@ -227,39 +244,46 @@ The parser uses recursive descent and builds an AST. Key classes:
 1. Add failing test case in appropriate test file
 2. Use `--filter` to run just that test: `./vendor/bin/pest --filter="test name"`
 3. Debug by reviewing parser trace
-4. Fix in `Parser/Parser.php`
+4. Fix in `src/Parser/Parser.php`
 5. Run full suite to ensure no regressions: `composer test`
 
 ### Debug a generation issue
 
 1. Create minimal grammar that reproduces the issue
 2. Add test case with expected output
-3. Trace through `Generator/Generator.php` logic
+3. Trace through `src/Generator/Generator.php` logic
 4. Check AST structure from Preprocessor if needed
 5. Fix and verify with `composer test`
 
 ## File Structure at a Glance
 
 ```
-polygen/
-├── Polygen.php              # Public API facade (25 lines)
-├── autoload.php             # PSR-4 autoloader
-├── Lexer/
-│   ├── Lexer.php           # Tokenizer
-│   ├── Token.php           # Token value object
-│   └── TokenType.php       # Token enum
-├── Parser/
-│   ├── Parser.php          # Recursive-descent parser
-│   └── Ast/                # AST node types (sealed classes)
-├── Preprocessor/
-│   └── Preprocessor.php    # Optimization pass
-├── Generator/
-│   └── Generator.php       # Runtime generation engine
-├── tests/                  # ~120 test cases (Pest framework)
-├── composer.json           # Package metadata & Pest dependency
-├── examples.php            # Example grammars
-└── [Documentation]         # README, QUICKSTART, TESTING, INDEX
+polygen-php/
+├── src/
+│   ├── Polygen.php              # Public API facade
+│   ├── Lexer/
+│   │   ├── Lexer.php           # Tokenizer
+│   │   ├── Token.php           # Token value object
+│   │   └── TokenType.php       # Token enum
+│   ├── Parser/
+│   │   ├── Parser.php          # Recursive-descent parser
+│   │   └── Ast/                # AST node types (sealed classes)
+│   │       ├── TerminalNode.php, TerminalEpsilon.php, TerminalConcat.php, etc.
+│   │       ├── AtomNode.php, AtomTerminal.php, AtomNonTerm.php, etc.
+│   │       ├── SeqNode.php, ProdNode.php, DeclNode.php, BindMode.php
+│   ├── Preprocessor/
+│   │   └── Preprocessor.php    # Optimization pass
+│   └── Generator/
+│       └── Generator.php       # Runtime generation engine
+├── tests/                      # ~127 test cases (Pest framework)
+├── composer.json               # Package metadata & Pest dependency
+├── examples.php                # Example grammars
+├── simple_test.php             # Minimal verification test
+├── test.php                    # Comprehensive test suite
+└── [Documentation]             # README, QUICKSTART, TESTING, INDEX, LICENSE
 ```
+
+**PSR-4 Configuration**: All code under `src/Polygen\` namespace is autoloaded from `src/` directory.
 
 ## Known Limitations
 
