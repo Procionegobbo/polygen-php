@@ -104,6 +104,58 @@ $p = new Polygen($grammar);
 echo $p->generate();  // Always uses the same color twice
 ```
 
+## Advanced Features
+
+### Mobile/Shuffle Groups
+
+```php
+// Shuffle groups generate all permutations
+$grammar = 'S ::= { red green blue } ;';
+$p = new Polygen($grammar);
+
+// Generates "red green blue", "red blue green", "green red blue", etc.
+echo $p->generate();
+```
+
+### Multi-label Selectors
+
+```php
+// Select from multiple label options at once
+$grammar = <<<'GRAMMAR'
+Noun ::= M: prince | M: king | F: princess | F: queen ;
+S ::= A Noun.(M|F) appears
+GRAMMAR;
+
+$p = new Polygen($grammar);
+echo $p->generate();  // "A prince appears" or "A princess appears"
+```
+
+### Deep Unfold
+
+```php
+// Inline alternatives into parent sequence
+$grammar = 'S ::= once >>(upon a time | long ago)<< there ;';
+$p = new Polygen($grammar);
+
+// Generates "once upon a time there" or "once long ago there"
+echo $p->generate();
+```
+
+### Scoped Redefinitions
+
+```php
+// Local declarations inside sub-expressions
+$grammar = <<<'GRAMMAR'
+S ::= (
+  Color := red | blue ;
+  I see Color and Color
+) ;
+GRAMMAR;
+
+$p = new Polygen($grammar);
+echo $p->generate();  // "I see red and red" or "I see blue and blue"
+```
+
 ## PML Grammar Syntax Reference
 
 | Feature | Syntax | Example | Result |
@@ -116,6 +168,9 @@ echo $p->generate();  // Always uses the same color twice
 | **Optional** | `[sub]` | `hello [world]` | "hello" or "hello world" |
 | **Grouped** | `(sub)` | `(a \| b) c` | "a c" or "b c" |
 | **Mobile** | `{a b c}` | `{a b c}` | Any permutation of a, b, c |
+| **Multi-label** | `atom.(L1\|L2)` | `Word.(M\|F)` | Select from labels |
+| **Deep unfold** | `>>prod<<` | `x >>(a\|b)<< y` | Expand into parent |
+| **Scoped decl** | `(X := v; body)` | `(X := a; X X)` | Local definition |
 | **Epsilon** | `_` | `hello _ world` | "hello world" (nothing in middle) |
 | **Concat** | `^` | `super^man` | "superman" (no space) |
 | **Capitalize** | `\` | `\ hello` | "Hello" (first letter uppercase) |

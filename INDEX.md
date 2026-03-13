@@ -170,21 +170,22 @@ Grammar Text
 ✅ **Fully Supported**
 - Definitions (`::=`) and assignments (`:=`)
 - Alternatives (`|`), optional groups (`[...]`)
-- Mobile/shuffle groups (`{...}`)
+- Mobile/shuffle groups (`{...}`) with all permutations
+- Multi-label selectors `.(label1|label2)`
+- Scoped redefinitions with inline declarations `(X := value; body)`
+- Deep unfold operator `>>...<<` for inlining alternatives
 - Terminals: words, quoted strings
 - Terminal operators: `_`, `^`, `\`
 - Labels and label selectors
 - Weighted alternatives (`+`, `-`)
 - Nested comments
 - Unfold/lock operators
-
-⚠️ **Partially Supported**
-- Multi-label selectors
-- Scoped declarations
+- Complex grammar composition
 
 ❌ **Not Implemented**
-- File imports
-- Full path-based symbol resolution
+- File imports (`import` statements)
+- Path-based non-terminal references (`module/symbol`)
+- Some advanced scoping rules from original Polygen
 
 ---
 

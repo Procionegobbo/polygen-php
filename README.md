@@ -9,8 +9,13 @@ A PHP 8.4+ implementation of Polygen - a random sentence generator based on BNF-
 - Weighted random selection with shuffle algorithm
 - Support for definitions (`::=`) and assignments (`:=`)
 - Optional groups `[...]`
+- Mobile/shuffle groups `{...}` with all permutations
+- Multi-label selectors `.(label1|label2)`
+- Scoped redefinitions with inline declarations `(X := value; body)`
+- Deep unfold operator `>>...<<` for inlining alternatives
 - Terminal operators: epsilon `_`, concatenation `^`, capitalization `\`
 - Non-terminal references and sub-grammars
+- Label-based filtering and selection
 
 ## Installation
 
@@ -165,16 +170,19 @@ S ::= hello | goodbye ;
 S ::= word.label | word ;
 ```
 
-## Limitations
+## Known Limitations
 
-The current implementation supports the core PML features. Some advanced features are not yet fully implemented:
+The implementation supports nearly all core PML features. The following are not yet implemented:
 
-- Scoped redefinitions (declarations inside parentheses)
-- Deep unfold operator `>>...<<`
-- Path-based non-terminal references (only simple symbols)
-- Import statements
-- Multi-label selectors `.(label1|label2)`
-- Nested comment support (basic level only)
+- Path-based non-terminal references (e.g., `module/symbol`)
+- Import statements and file inclusion
+- Some advanced scoping rules in the original Polygen
+
+**Nested comments:** Fully supported ✓
+**Mobile groups:** Fully supported ✓
+**Deep unfold:** Fully supported ✓
+**Multi-label selectors:** Fully supported ✓
+**Scoped redefinitions:** Fully supported ✓
 
 ## Testing
 
