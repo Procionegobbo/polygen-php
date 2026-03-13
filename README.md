@@ -109,25 +109,26 @@ Output String
 ### File Structure
 
 ```
-polygen/
-├── Polygen.php                      # Main API class
-├── Lexer/
-│   ├── TokenType.php               # Token enum
-│   ├── Token.php                   # Token value object
-│   └── Lexer.php                   # Tokenizer
-├── Parser/
-│   ├── Parser.php                  # Recursive-descent parser
-│   └── Ast/
-│       ├── TerminalNode.php        # Terminal operators
-│       ├── AtomNode.php            # AST atom nodes
-│       ├── SeqNode.php             # Sequence node
-│       ├── ProdNode.php            # Production (alternatives)
-│       └── DeclNode.php            # Declaration node
-├── Preprocessor/
-│   └── Preprocessor.php            # Optimization pass
-├── Generator/
-│   └── Generator.php               # Random generation engine
-└── autoload.php                    # PSR-4 autoloader
+polygen-php/
+├── src/
+│   ├── Polygen.php                 # Main API facade
+│   ├── Lexer/
+│   │   ├── TokenType.php           # Token enum
+│   │   ├── Token.php               # Token value object
+│   │   └── Lexer.php               # Tokenizer
+│   ├── Parser/
+│   │   ├── Parser.php              # Recursive-descent parser
+│   │   └── Ast/
+│   │       ├── TerminalNode.php, TerminalEpsilon.php, TerminalConcat.php, etc.
+│   │       ├── AtomNode.php, AtomTerminal.php, AtomNonTerm.php, etc.
+│   │       ├── SeqNode.php, ProdNode.php, DeclNode.php, BindMode.php
+│   ├── Preprocessor/
+│   │   └── Preprocessor.php        # Optimization pass
+│   └── Generator/
+│       └── Generator.php           # Random generation engine
+├── tests/                          # 127 comprehensive test cases
+├── composer.json                   # Package metadata
+└── [Documentation]                 # README, QUICKSTART, TESTING, INDEX
 ```
 
 ## PML Grammar Syntax
@@ -177,18 +178,28 @@ The current implementation supports the core PML features. Some advanced feature
 
 ## Testing
 
-Run the test suite:
+Run the test suite with Composer:
 
 ```bash
-php polygen/test.php
+composer test
 ```
 
-Or use the simple test:
+Or run example scripts:
 
 ```bash
-php polygen/simple_test.php
+php examples.php
+php simple_test.php
+php test.php
 ```
+
+## Acknowledgments
+
+This PHP 8.4+ implementation is a port of the original **Polygen** project by **[Alvi Sansone](https://github.com/alvisespano)** ([@alvisespano](https://github.com/alvisespano)).
+
+The original Polygen is an OCaml implementation of a random sentence generator based on BNF-like grammars. This port preserves the core architecture and grammar syntax while adapting it for modern PHP with strict typing, sealed classes, and zero external dependencies.
+
+**Original Repository**: https://github.com/alvisespano/Polygen
 
 ## License
 
-Same as the original Polygen project.
+MIT License - Same terms as the original Polygen project.
