@@ -1,0 +1,9 @@
+/tests              export-ignore
+/examples.php       export-ignore
+/simple_test.php    export-ignore
+/test.php           export-ignore
+/pest.xml           export-ignore
+/.gitattributes     export-ignore
+/CLAUDE.md          export-ignore
+/TESTING.md         export-ignore
+/INDEX.md           export-ignore

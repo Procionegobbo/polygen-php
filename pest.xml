@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pest xmlns="https://pestphp.com/schema/pest.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://pestphp.com/schema/pest.xsd vendor/pestphp/pest/pest.xsd">
+    <testSuite name="Polygen Test Suite">
+        <directory>tests</directory>
+    </testSuite>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">tests</directory>
+            <directory suffix=".php">vendor</directory>
+        </exclude>
+    </coverage>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="display_errors" value="On"/>
+    </php>
+</pest>

@@ -1,0 +1,48 @@
+{
+  "name": "polygen/polygen-php",
+  "description": "PHP 8.4+ implementation of Polygen - random sentence generator with BNF-like grammars",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Polygen PHP Contributors"
+    }
+  ],
+  "require": {
+    "php": ">=8.4"
+  },
+  "require-dev": {
+    "pestphp/pest": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Polygen\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "keywords": [
+    "grammar",
+    "generator",
+    "random",
+    "polygen",
+    "pml",
+    "bnf"
+  ],
+  "homepage": "https://github.com/Procionegobbo/polygen-php",
+  "support": {
+    "issues": "https://github.com/Procionegobbo/polygen-php/issues",
+    "source": "https://github.com/Procionegobbo/polygen-php"
+  },
+  "scripts": {
+    "test": "pest"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
