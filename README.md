@@ -2,6 +2,10 @@ create# Polygen PHP 8.4+ Port
 
 A PHP 8.4+ implementation of Polygen - a random sentence generator based on BNF-like grammar definitions.
 
+## Disclaimer
+
+This project is a tribute to the legendary **Polygen**. It was created almost entirely with Claude Code and makes no claim to approach the brilliance of Alvise Spanò's original implementation. The purpose of this project is simply to try to create a Composer-compatible implementation for the PHP community.
+
 ## Features
 
 - Full implementation of the Polygen Meta Language (PML) parser
