@@ -5,7 +5,7 @@
 Install via Composer:
 
 ```bash
-composer require polygen/polygen-php
+composer require procionegobbo/polygen-php
 ```
 
 Then use it in your code:

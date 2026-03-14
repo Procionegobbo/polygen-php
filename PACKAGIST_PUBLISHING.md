@@ -1,6 +1,6 @@
 # Publishing Polygen PHP on Packagist
 
-This guide explains how to publish the `polygen/polygen-php` package on Packagist.
+This guide explains how to publish the `procionegobbo/polygen-php` package on Packagist.
 
 ## Prerequisites
 
@@ -51,7 +51,7 @@ Packagist will ask for GitHub credentials to:
 Once submitted, Packagist will show:
 
 ```
-Name: polygen/polygen-php
+Name: procionegobbo/polygen-php
 Type: library
 Description: PHP 8.4+ implementation of Polygen - random sentence generator with BNF-like grammars
 License: MIT
@@ -64,7 +64,7 @@ Homepage: https://github.com/Procionegobbo/polygen-php
 After publication (usually within minutes), test that the package works:
 
 ```bash
-composer create-project polygen/polygen-php test-install
+composer create-project procionegobbo/polygen-php test-install
 cd test-install
 php simple_test.php
 ```
@@ -72,14 +72,14 @@ php simple_test.php
 Or add to an existing project:
 
 ```bash
-composer require polygen/polygen-php
+composer require procionegobbo/polygen-php
 ```
 
 ## Package Details
 
 | Property | Value |
 |----------|-------|
-| **Name** | polygen/polygen-php |
+| **Name** | procionegobbo/polygen-php |
 | **Repository** | https://github.com/Procionegobbo/polygen-php |
 | **Type** | library |
 | **License** | MIT |
@@ -143,7 +143,7 @@ After publication, you'll be able to see:
 
 - Search on https://packagist.org
 - Search for "polygen-php" or "Polygen PHP"
-- Check exact name: `polygen/polygen-php`
+- Check exact name: `procionegobbo/polygen-php`
 
 ### Update not automatic
 
@@ -166,7 +166,7 @@ Share your newly published package:
 Update your README with official Composer installation:
 
 ```bash
-composer require polygen/polygen-php
+composer require procionegobbo/polygen-php
 ```
 
 (This is already in the current README ✅)

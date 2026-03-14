@@ -1,5 +1,5 @@
 {
-  "name": "polygen/polygen-php",
+  "name": "procionegobbo/polygen-php",
   "description": "PHP 8.4+ implementation of Polygen - random sentence generator with BNF-like grammars",
   "type": "library",
   "license": "MIT",

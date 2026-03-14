@@ -26,7 +26,7 @@ This project is a tribute to the legendary **Polygen**. It was created almost en
 Install via Composer:
 
 ```bash
-composer require polygen/polygen-php
+composer require procionegobbo/polygen-php
 ```
 
 Then use it in your code:
