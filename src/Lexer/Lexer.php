@@ -196,6 +196,12 @@ final class Lexer
             return new Token(TokenType::TERM, $word, $line, $column);
         }
 
+        // Allow UTF-8 multi-byte sequences (bytes ≥ 128) as terminal words
+        if (ord($char) > 127) {
+            $word = $this->readWord();
+            return new Token(TokenType::TERM, $word, $line, $column);
+        }
+
         // Skip any remaining whitespace characters (including newlines, tabs, carriage returns)
         if (ctype_space($char) || ord($char) < 33) {
             $this->pos++;
@@ -215,7 +221,7 @@ final class Lexer
         $word = '';
         while ($this->pos < strlen($this->input)) {
             $char = $this->current();
-            if (ctype_alnum($char) || $char === '_' || $char === "'") {
+            if (ctype_alnum($char) || $char === '_' || $char === "'" || ord($char) > 127) {
                 $word .= $char;
                 $this->advance();
             } else {

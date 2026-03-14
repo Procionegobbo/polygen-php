@@ -327,6 +327,30 @@ describe('Lexer', function () {
         });
     });
 
+    describe('UTF-8 Characters', function () {
+        it('tokenizes terminal with UTF-8 accented characters', function () {
+            $lexer = new Lexer('S ::= purè ;');
+            $tokens = $lexer->tokenize();
+            $termTokens = array_filter($tokens, fn($t) => $t->type === TokenType::TERM);
+            expect(array_values($termTokens)[0]->value)->toBe('purè');
+        });
+
+        it('tokenizes multiple accented terminals', function () {
+            $lexer = new Lexer('città | purè | caffè');
+            $tokens = $lexer->tokenize();
+            $termTokens = array_filter($tokens, fn($t) => $t->type === TokenType::TERM);
+            $values = array_map(fn($t) => $t->value, array_values($termTokens));
+            expect($values)->toBe(['città', 'purè', 'caffè']);
+        });
+
+        it('tokenizes mixed ASCII and UTF-8 in word', function () {
+            $lexer = new Lexer('caffe_è');
+            $tokens = $lexer->tokenize();
+            expect($tokens[0]->type)->toBe(TokenType::TERM);
+            expect($tokens[0]->value)->toBe('caffe_è');
+        });
+    });
+
     describe('Error Handling', function () {
         it('throws on unexpected character', function () {
             $lexer = new Lexer('@invalid');
