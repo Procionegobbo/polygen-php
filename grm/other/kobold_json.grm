@@ -1,0 +1,336 @@
+
+S::=\{
+ "Nomekoboldo":" <Nomekoboldo> ",
+ "CogNomekoboldo":" <CogNomekoboldo> ",
+ "Originekoboldo":" <Originekoboldo> ",
+ "Colorekoboldo":" <Colorekoboldo^U> ",
+ "SegnoParticolare":" <SegnoParticolare^U> ",
+ "ParentelaKoboldo":" <ParentelaKoboldo>^U ",
+ "PiattoKoboldo":" <PiattoKoboldo>^U ",
+ "StoriaKoboldo":" <StoriaKoboldo>^U ",
+ "MestiereKoboldo":"<MestiereAttuale>^U"
+\}
+;
+
+Nomekoboldo ::= (
+	(s|r|p|VOC|k*3)>KobPARTE
+	<(KobPARTE)^1-5
+)^U;
+
+KobPARTE ::= ass|and|VOC<r[<r]|VOC<ch|VOC<rk|r[<VOC][<(b|k|l|s|t)];
+VOC ::= a|e|i|o*3|u*3|y;
+
+CogNomekoboldo ::= (Prefisso((k*5|r|t|p|s|d|f|g|l|z|c|v|m)<KobPARTE2<(KobPARTE2)^1-5<VOC)^U)*5|(_);
+Originekoboldo ::= KobREGNO(_);
+KobPARTE2 ::= VOC<ss
+            |VOC<n[<d]
+            |VOC<r[<r]
+            |VOC<g[<h]
+            |VOC<l
+            |VOC<ch
+            |VOC<n
+            |VOC<f
+            |VOC<d
+            |VOC<r[<k]
+            |VOC<c[<c]
+            |VOC<p
+            |i<VOC;
+
+KobREGNO ::= [TipoTerra]^U  (ParteRegno [<ParteRegno] [<ParteRegno] [<ParteRegno] [<VOC])^U;
+
+ParteRegno ::= ( b<[l]<ash|trog|zwol|mop|yon|wos|zlom|krol|prot|dor|tor|yor|zor|for|por|car|cos );
+
+Prefisso ::= ( de^U|de|von^U|von|_*5 );
+
+Citta ::= città [sotterranea|volante|morta];
+TipoTerra ::= (
+	la terra|
+	la spiaggia|
+	la valle|
+	la steppa|
+	la palude|
+	la Citta|
+	l  isola|
+	la penisola|
+	la periferia|
+	il complesso vulcanico|
+	il ghiacciaio|
+	la discarica|
+	il pozzo|
+	l abisso|
+	le caverne|
+	le grotte|
+	l orfanotrofio|
+	lo zoo) di;
+
+
+ColoreBase ::= ColoreCromatico*5
+    |ColoreMetallico*2
+    |ColoreCristallo*1
+    |ColoreFumble*3;
+
+Colorekoboldo ::= ColoreBase (e ColoreBase|_*10);
+
+ColoreCromatico ::= rosso|verde|blu|nero|giallo|arancione|marrone|bianco|azzurro|viola|porpora;
+ColoreMetallico ::= oro|bronzo|argento|platino|mithril|oricalco|ferro|bario;
+ColoreCristallo ::= cristallo di (rocca|diamante|quarzo|smeraldo|rubino|vetro|ghiaccio);
+
+
+ColoreFumble ::= (Prosmatico|Vermiglio|Oro|Nero|Bianco|Rosso|Blu|Verde|Bianco|Rosso|Bah...|Bianco coi piedi Beige|
+	Marroncino scuro|dipinto di bianco con toupe|Marrone|Coboldo generico|Zaffiro|Soggettivo|Cremisi|Magma|
+	Grigio con striature Nere|Dipende da chi lo guarda|Oro|Bianco|Blu|Nero|Giallo|Blu|Blallo|Blu cobalto|
+	Rosso pompeiano (ocra rossa)|Rosso|Verde|Rosa Confetto|Nero|Argento (del Canto)|Bianco e Rosso|
+	Metallo|Rosa|Kamaleonte (Koboleonte)|Tigrato Grigio) ;
+
+
+SegnoParticolare ::= nessuno|
+	(
+        crede di [non] essere|si finge|nasconde di [non] essere|nega di essere|era*2|_
+    )(
+        cieco|sordo|muto|non morto|demente|falso|comico|saggio|valoroso|peloso|superdotato|
+        basso|cretino|pelato|meteoropatico|flatulento|depresso|ipocondriaco|bipolare
+    )|
+    ha una (cresta di (squame|peli|capelli|piume)|(doppia|tripla) coda [pelosa|piumata|spinosa])|
+    (parla|crede di parlare)(
+        (con (i morti|gli animali|gli alberi|le stelle|le nuvole|i suoi (amici|nemici) immaginari))|
+        (al vento|da solo|sempre sottovoce|urlando|in rima)
+    )|
+    (suona*2|crede di saper suonare)(
+        il (banjo|piffero|flauto|contrabbasso|pianoforte|violino|triangolo|bongo|tamburo)|l'<(ukulele|arpa)|la (chitarra|viola|grancassa)
+    )|
+    (pratica|conosce|(crede|pensa|dice|finge|nasconde) di (praticare|conoscere|studiare) )
+    (lo snake-fu|la magia|il voodoo|sesso con le nane|l'uncinetto)
+;
+
+
+
+/*
+---------------------------------------------------------------------------------------------------------
+	Parentela
+---------------------------------------------------------------------------------------------------------
+*/
+ParentelaKoboldo ::= Parentela di KoboldoFumble;
+
+
+KoboldoFumble ::= (krubal|skrudo|stupido Idiota|kribug|kerri|ukrabal|nonno Kenny)^U;
+
+Parentela ::= PreParentame Parentame ;
+
+PreParentame ::= ([secondo|_*3] cugino [acquisito] [di (primo|secondo|terzo|quarto) grado] da parte di (madre|padre))*5|[pro>]zio|figlio|un vicino di (casa|covata|nido)|nipote;
+Parentame ::= (
+            del padre|della madre|dello zio|della [pro>]zia|(dello zio|del prozio)
+            |(della cugina|del cugino) di (primo|secondo|terzo|quarto) grado
+            |(del [bis>|tris>]nonno|della [bis>|tris>]nonna)
+            |(del fratello|della sorella)|del cognato|della cognata|del genero|della nuora
+            |del figlio [illegittimo|segreto]|della figlia [illegittima|segreta]
+            ) [Parentame];
+
+
+/*
+---------------------------------------------------------------------------------------------------------
+	Cibo preferito
+---------------------------------------------------------------------------------------------------------
+*/
+
+PiattoKoboldo ::=  (Arrosto*2|Brodo*2|Colazione) (alla KoboldoFumble|_*5);
+
+Gatto ::= (gatto*5 [siamese|soriano|rosso|persiano|nudo|abissino|d'angora|orientale]
+		|felino|gatto selvatico|caracal)
+		(e (grifone|lepre [assassina]|drago farfalla|piccione)|_*3);
+
+Arrosto ::= (
+	(
+		(
+			arrosto ripieno (di micetti (da latte|_*2)|_*2) |fettina|costolette|braciole|spedini|arrosticini|
+			spezzatino|casseula|frittura|hamburger|
+			salsiccia|luganega|tartare|straccetti|polpette|
+			orecchiette (fritte|al sugo|_*3)|coscette|petto|testina|
+			coda|code|arrosticini|salame|prosciutto|torta salata
+		) di Gatto
+		|Gatto (
+		  arrosto|in crosta (di sale|di pane|_*3)|
+		  fritto|brasato|in umido|lesso|in salamoia|
+		  alla cacciatora|alla scottadito|porchettato|
+		  in agrodolce|saltato|sfilettato
+    )
+	)
+	[con(
+		patate (fritte|al forno|lesse|_*4)|purè|finferli|salsa (di soia|ketchup|barbecue)|maionese|verdure [saltate]|senape|kafferano*2
+	)]
+	);
+
+Brodo ::= (brodo di Gatto|Gatto in brodo) [con Aroma [e Aroma]];
+
+Aroma ::= (alloro|carota|prezzemolo|timo|paprika|erba gatta|erba cipollina|pepe [rosso|nero|bianco]|cardamomo|noce moscata|chiodi di garofano|kafferano*2);
+
+Colazione ::= (omelette di Gatto [con Aroma [e Aroma]]|centrifugato di Gatto [con Aroma]|biscotti di Gatto|toast di Gatto) ;
+/*
+---------------------------------------------------------------------------------------------------------
+	Cibo preferito
+---------------------------------------------------------------------------------------------------------
+*/
+
+EventoCovata =
+MS (l'uovo di Nomekoboldo EventoCovataAbbandono)|
+FS (la covata di Nomekoboldo (fu|venne) (deposta|persa|abbandonata|rubata|trovata) (dal suo clan|_*5)) |
+Altro (Nomekoboldo (
+			EventoCovataCaduta|
+			EventoCovataAbbandono|
+			nacque|
+			uscì dall'uovo|
+			comparve dal nulla
+		))
+;
+
+EventoCovataCaduta ::= cadde (dal cielo|dal nido|da una cascata );
+EventoCovataAbbandono ::= venne (deposto|perso|abbandonato|rubato|trovato) (dal suo clan|_*5);
+
+Mestiere ::= (cuoco|barbaro|bardo|chierico[di Divino]|druido|guerriero|ladro|mago|paladino[di Divino]|ranger|arcanero|capitano|collezionista|danzatore dei cieli|meccanico|scalatore|signore delle piogge)|
+(contadino|maniscalco|fabbro|falegname|cestaio|sarto|vasaio|panettiere|calzolaio|cameriere|locandiere|accattone|campanaro);
+MestiereAttuale::=Mestiere;
+
+UmiliazioneClan ::= aiutato|soccorso|schiavizzato|sterminato|umiliato|raggirato|derubato|
+raggirato|mangiato|cromato|schiacciato|curato|esiliato|[s>]verniciato;
+
+
+Divino ::= Mordiggian|Saint Ardutan|Erath|Arash|Ardutan|Krubal|un dio (inventato|a caso|qualsiasi|immaginario|del (male|bene));
+
+SPECIAL2 ::= i SPECIALp^ii|gli SPECIALp^gli ;
+SPECIALp =ii (
+	                (
+		                falsi dei[del (male|bene)][in incognito]|
+		                [non-]morti|cocomeri|
+		                golem|chierici[di Divino]|
+		                lombrichi [giganti|demoniaci]|pelati|
+		                capelloni|(cavalieri [di Divino|neri|bianchi|rossi|verdi|di fiori|di cuori|senza cavallo])*2|
+		                ladri|bardi|sith|colleghi|ladri|
+		                guerrieri|re magi|maghi[neri|rossi|bianchi|verdi|del caos|reali]|
+		                draghi[rossi|verdi|neri|blu|d'oro|d'argento|bianchi]|
+		                gorilla[bianchi|nella nebbia]|
+		                demoni|baatezu|pit fiend|basilischi|pipistrelli|vampiri|beholder|
+		                bugbear|leprotti assassini|leopardi|giaguari|
+		                centauri|ciclopi|giganti[delle colline|delle tempeste|dei ghiacci|del fuoco|delle montagne]|
+		                (lupi|cinghiali|corvi|pipistrelli|ratti) mannari|
+		                cani|delfini|maiali[<ni]|funghi|gargoyle|goblin|
+		                golem[d'osso|di ferro|di pietra|di carne|d'ambra]|
+		                gremlin|[demi>]lich|marinai|minotauri|
+		                tanar'ri|tarrasque|titani|trogloditi|tritoni|troll|pornicorni
+                    )*20
+                    |
+                    ((mangiatori|fabbricatori|rompitori|sodomizzatori) di (SPECIALp^ii|SPECIALp^gli)|(servi|fedeli|sudditi|succubi) de>SPECIAL2)
+            )|
+            gli (
+                (autisti[ di (camion|bighe|pullman|autobus|tandem|[moto>]taxi|riscio')]|
+                elfi [oscuri|alti|dei boschi|silvani|marini|marinati|drow|grigi]|
+                gnoll|jedi|umani|
+                elementali[del fuoco|della terra|dell'acqua|dell'aria]|
+                antichi|efreeti|elementali[dell'aria|dell'acqua|del fuoco|della terra]|
+                ettin|halfling|hobbit|ippocampi|illithid|ogre|orchi|
+                scheletri|slaad|unicorni|yugoloth|yeti|zombi|
+                dei [infami] [del (male|bene)] [in incognito])*20
+                |
+                ((amici|amanti|adoratori|schiavi[sessuali]|spingitori) de<SPECIAL2)
+            );
+
+
+/*
+---------------------------------------------------------------------------------------------------------
+  Storia  
+---------------------------------------------------------------------------------------------------------
+*/
+
+Nascita=
+	((EventoCovata^MS|EventoCovata^FS|EventoCovata^Altro) in un luogo conosciuto come Originekoboldo)*4|
+	un luogo conosciuto come Originekoboldo vide la schiusa (MS dell'uovo|FS della covata) di Nomekoboldo
+;
+
+StoriaKoboldo ::= Nascita
+<, [appena nato] le sue scaglie erano [di un (bellissimo|orrendo|ributtante|attraente|laido|viscido|putrido|peloso|brillante)]
+(
+	Colorekoboldo|ColoreBase (poi crescendo|col tempo|in pochi (mesi|giorni)) divennero Colorekoboldo
+)<.
+( StoriaClanInizioA | StoriaClanInizioB )
+StoriaClanMedioA
+(poco prima di raggiungere|raggiunta|superata)^U la maggiore età
+(decise di|fu costretto a|fu convinto a|disse a
+	(tutti|<i suoi ([pochi] amici|parenti|conoscenti)|una persona a caso|<l Respiro) di voler
+)
+(fuggire|scappare|(seguire (la carriera|le orme|l'odore|l'esempio) Parentame di suo PreParentame))*2
+(e|per) (diventare|essere) un [vero|grande|apprendista|falso] MestiereAttuale
+[anche se [segretamente] avrebbe (preferito|voluto) ((essere|diventare|fingersi|spacciarsi per|mangiarsi|cucinare) un) Mestiere [qualsiasi|a caso]]<.
+;
+
+
+AntagonistiClanRegno ::=
+del (
+  <la TipoTerra^la|
+  TipoTerra^il|
+  <l'>TipoTerra^l|
+  <lo TipoTerra^lo |
+  <le TipoTerra^le
+)
+(ParteRegno [<ParteRegno] [<ParteRegno] [<ParteRegno] [<VOC])^U;
+
+AntagonistiClanBase ::= SPECIALp ;
+AntagonistiClan ::= i AntagonistiClanBase^ii [AntagonistiClanRegno]|gli AntagonistiClanBase^gli [AntagonistiClanRegno];
+
+StoriaClanInizioA ::= (
+           	((
+           		(in seguito a |dopo|durante|nel mezzo di)
+           		(alcune|varie|(una|l'ultima) delle tante|una delle molte)
+           		(vicende|carestie|epidemie|guerre)
+           		[[ormai] perse nel tempo|poco chiare|[accuratamente|misteriosamente]
+           		(dimenticate|occultate|censurate)|misteriose|dimenticate]
+           	)|
+           	(
+           		dopo [alcuni|troppi|pochi] anni [infausti|buii|oscuri|felici|pieni di gatti]
+           	))
+           	[tutto il|una parte del|metà del|uno a caso del|il capo|lo sciamano]
+           	suo clan venne UmiliazioneClan (da>AntagonistiClan|da un (clan|esercito|gruppo|<a tribù|<a banda|<a coppia|<a ciurma) di AntagonistiClanBase)<.
+           )^U;
+
+StoriaClanInizioB =
+il^U suo (clan*5|villaggio)
+(
+  (viveva|si procurava da vivere|(si (dilettava|cimentava)|sopravviveva))
+  con (la caccia|la pesca|l'agricoltura|la coltivazione|l'allevamento|la cromatura) de>AntagonistiClan
+  |
+  (viveva) di
+  (caccia|pesca|([piccole] truffe|furti|rapine|stenti) (ai danni|per conto|su commissione) de>AntagonistiClan)
+  |
+  era (bullizzato|asservito|ridicolizzato|schifato|schiavizzato|dominato|terrorizzato|abusato|schernito|temuto|spesso mangiato|preso di mira)
+  da>AntagonistiClan
+  )<.
+;
+
+StoriaClanMedioA ::= (
+una^U
+(guerra*3|scaramuccia|gara di (corsa|rutti|scuregge|nuoto|caccole))
+scoppiò tra il clan di Nomekoboldo e AntagonistiClan <.
+(le ostilità continuarono fino a quando il giovane Nomekoboldo<, fu (aiutato|ostacolato|turbato|spinto [con l'inganno]|lanciato con una catapulta|drogato|corrotto con PiattoKoboldo)
+da suo PreParentame (e*5|ma) riuscì a
+(sconfiggere|uccidere|corrompere|mangiare|sedurre|far impazzire|bruciare|bruciacchiare)
+l'ultimo de>AntagonistiClan<.)^U
+(il clan di Nomekoboldo ne uscì
+(indebolito|sterminato|sparpagliato|sazio|confuso|rafforzato|scintillante|coperto di
+  (metallo|sugo|gloria|vergogna|liquidi (appiccicosi|maleodorante)|oro|peli)
+)
+[, anche se nessun Mestiere (sopravvisse|se ne lamentò|ci guadagnò qualcosa|ne fu (felice|informato|infornato))]<.)^U
+);
+
+
+
+RAZZA ::= [mezz>]elfo [[poco|molto|leggermente|troppo|quasi|apparentemente]oscuro] | nano |
+	halfling[\(hobbit senza copyright\)] | elfo [dei boschi|alto] | gnomo | CLASSE | umano | goblin | koboldo |
+            drago[nero|rosso|verde|d'oro|blu|bianco]|vampiro| gigante[delle colline|delle tempeste|dei ghiacci]|
+            fantasma|demone|baatezu|beholder|centauro|dinosauro|tirannosauro|
+            brontosauro|diplodoco|velociraptor|[demi>]lich| ciclope|fungo|golem[d'osso|di ferro|di pietra|di carne|d'ambra]|
+            grifone|fifone| (lupo|cinghiale|corvo|orso|pipistrello|ratto)[mannaro]|
+            orco|scorpione|scheletro|serpente|tarrasque|titano|troglodita|troll|
+            hacker|impiegato|collega|barbone|poraccio|tritone|unicorno|verme[iena]|yugoloth|procione[gobbo];
+CLASSE ::= [finto->] guerriero|mago|pastore[ di SPECIALp]|
+            ninja|assassino|ladro|traditore|ranger|cacciatore|cabarettista|
+            terrorista|prete|addestratore[ di SPECIALp]|chirurgo[plastico]|ginecologo|SPECIAL1|
+            pilota[di(F1|rally|caccia|linea|tricicli)|spaziale]|contadino|minatore|erborista|
+            spacciatore|frate[francescano|domenicano|gesuita|eretico]|
+            monaco[shintoista|buddista]|eremita;

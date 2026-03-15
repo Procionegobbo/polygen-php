@@ -1,0 +1,2 @@
+import "names.grm" as Names ;
+S ::= Names/First ^ ^ Names/Last ;

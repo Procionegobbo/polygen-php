@@ -18,6 +18,8 @@ use Polygen\Parser\Ast\TerminalConcat;
 use Polygen\Parser\Ast\TerminalEpsilon;
 use Polygen\Parser\Ast\TerminalNode;
 use Polygen\Parser\Ast\TerminalTerm;
+use Polygen\Parser\ImportDirective;
+use Polygen\Parser\ParseResult;
 
 final class Parser
 {
@@ -27,13 +29,31 @@ final class Parser
         private readonly array $tokens,  // Token[]
     ) {}
 
-    public function parse(): array
+    public function parse(): ParseResult
     {
         $decls = [];
+        $imports = [];
         while (!$this->isAtType(TokenType::EOF)) {
-            $decls[] = $this->parseDecl();
+            if ($this->checkType(TokenType::IMPORT)) {
+                $imports[] = $this->parseImport();
+            } else {
+                $decls[] = $this->parseDecl();
+            }
         }
-        return $decls;
+        return new ParseResult($decls, $imports);
+    }
+
+    private function parseImport(): ImportDirective
+    {
+        $this->expectType(TokenType::IMPORT);
+        $path = $this->expectType(TokenType::QUOTE)->value;
+        $alias = null;
+        if ($this->checkType(TokenType::AS)) {
+            $this->consume();
+            $alias = $this->expectType(TokenType::NONTERM)->value;
+        }
+        $this->expectType(TokenType::EOL);
+        return new ImportDirective($path, $alias);
     }
 
     private function parseDecl(): DeclNode
