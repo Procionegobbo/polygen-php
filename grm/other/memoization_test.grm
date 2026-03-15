@@ -1,8 +1,8 @@
-S ::= dal primo esempio ho
-PrimoEsempio
-e dal secondo esempio ho
-SecondoEsempio;
-PrimoEsempio := scelto il carattere Carattere;
-SecondoEsempio := scelto il carattere Carattere;
+S ::= "from first example I got "
+FirstExample
+" and from second example I got "
+SecondExample;
+FirstExample := "picked character " Character;
+SecondExample := "picked character " Character;
 
-Carattere ::= a | b | c | d | e | f | g | h | i | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z;
+Character ::= a | b | c | d | e | f | g | h | i | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z;

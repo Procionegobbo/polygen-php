@@ -31,16 +31,16 @@ test('same nonterminal called multiple times generates different values', functi
     expect(false)->toBe(true, "After 20 runs, never got different characters for repeated Char calls");
 });
 
-test('multiple rules using same dependencies generate different values', function () {
+test('assignment rules with shared dependencies generate different values', function () {
     $grammar = <<<'GRM'
-    S ::= dal primo esempio ho
-    PrimoEsempio
-    e dal secondo esempio ho
-    SecondoEsempio;
-    PrimoEsempio := scelto il carattere Carattere;
-    SecondoEsempio := scelto il carattere Carattere;
+    S ::= "from first example I got "
+    FirstExample
+    " and from second example I got "
+    SecondExample;
+    FirstExample := "picked character " Character;
+    SecondExample := "picked character " Character;
 
-    Carattere ::= a | b | c | d | e | f | g | h | i | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z;
+    Character ::= a | b | c | d | e | f | g | h | i | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z;
     GRM;
 
     $p = new Polygen($grammar);
@@ -49,7 +49,7 @@ test('multiple rules using same dependencies generate different values', functio
     $results = [];
     for ($i = 0; $i < 15; $i++) {
         $output = $p->generate();
-        preg_match_all('/scelto il carattere ([a-z])/', $output, $matches);
+        preg_match_all('/picked character\s+([a-z])/', $output, $matches);
 
         if (isset($matches[1]) && count($matches[1]) === 2) {
             $first = $matches[1][0];
