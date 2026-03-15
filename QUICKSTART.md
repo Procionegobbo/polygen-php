@@ -156,6 +156,187 @@ $p = new Polygen($grammar);
 echo $p->generate();  // "I see red and red" or "I see blue and blue"
 ```
 
+## Module System (Grammar Reuse)
+
+Organize complex grammars by splitting them into reusable modules. Modules are loaded via `import` statements and can reference symbols from other modules.
+
+### Basic Usage
+
+**Create a module file `grammars/names.grm`:**
+
+```grm
+FirstName ::= alice | bob | charlie ;
+LastName ::= smith | johnson | williams ;
+```
+
+**Load and use the module in your code:**
+
+```php
+// Load from file (automatically resolves imports)
+$polygen = Polygen::fromFile('path/to/main.grm');
+
+// Or use a grammar string with basePath
+$grammar = <<<'GRAMMAR'
+import "names.grm" as Names ;
+S ::= Names/FirstName ^ ^ Names/LastName ;
+GRAMMAR;
+
+$polygen = new Polygen($grammar, 'path/to/grammars');
+echo $polygen->generate();  // "alicesmith", "bobwilliams", etc.
+```
+
+### Import Statement Syntax
+
+**Import with alias (prefixed references):**
+```grm
+import "file.grm" as Alias ;
+S ::= Alias/Symbol ;
+```
+
+**Global import (no prefix):**
+```grm
+import "file.grm" ;
+S ::= Symbol ;
+```
+
+### Path-based References
+
+When using aliases, reference imported symbols with a slash:
+
+```php
+$grammar = <<<'GRAMMAR'
+import "people.grm" as People ;
+import "places.grm" as Places ;
+S ::= People/Name lives in Places/City ;
+GRAMMAR;
+
+$polygen = new Polygen($grammar, 'grammars/');
+echo $polygen->generate();
+```
+
+### Module Examples
+
+**Nested modules (modules importing other modules):**
+
+```grm
+(* main.grm *)
+import "descriptors.grm" as Desc ;
+S ::= A Desc/Character appears ;
+
+(* descriptors.grm *)
+import "colors.grm" as Color ;
+Character ::= Color/Color knight ;
+
+(* colors.grm *)
+Color ::= red | blue | green ;
+```
+
+**Internal module references:**
+
+```grm
+(* full_name.grm *)
+FirstName ::= alice | bob ;
+LastName ::= smith | johnson ;
+Full ::= FirstName ^ ^ LastName ;
+```
+
+When imported as `Names`, the `Full` rule automatically references `Names/FirstName` and `Names/LastName`.
+
+### API Reference for Modules
+
+#### fromFile() - Static factory method
+
+```php
+public static function fromFile(string $filePath): Polygen
+```
+
+Loads a grammar from a file. Automatically resolves the base path for any imports.
+
+**Parameters:**
+- `$filePath`: Path to the grammar file
+
+**Returns:** Polygen instance
+
+**Throws:** `RuntimeException` if file cannot be read
+
+**Example:**
+```php
+$polygen = Polygen::fromFile('grammars/main.grm');
+echo $polygen->generate();
+```
+
+#### Constructor with basePath
+
+```php
+public function __construct(string $grammar, ?string $basePath = null)
+```
+
+**Parameters:**
+- `$grammar`: Grammar string (may contain import statements)
+- `$basePath`: Base path for resolving relative imports. Required if grammar contains imports.
+
+**Throws:** `RuntimeException` if imports are present but no basePath provided
+
+**Example:**
+```php
+$grammar = 'import "names.grm" as N ; S ::= N/First ;';
+$polygen = new Polygen($grammar, dirname(__FILE__) . '/grammars');
+echo $polygen->generate();
+```
+
+### Error Handling
+
+```php
+try {
+    $polygen = Polygen::fromFile('nonexistent.grm');
+} catch (RuntimeException $e) {
+    // "Cannot read grammar file: nonexistent.grm"
+}
+
+try {
+    $grammar = 'import "names.grm" as Names ; S ::= Names/First ;';
+    $polygen = new Polygen($grammar);  // No basePath!
+} catch (RuntimeException $e) {
+    // "Grammar contains import statements but no basePath was provided"
+}
+
+try {
+    $grammar = 'import "names.grm" as N ; S ::= N/UndefinedSymbol ;';
+    $polygen = new Polygen($grammar, 'grammars/');
+    $polygen->generate();  // Symbol lookup happens at generation time
+} catch (RuntimeException $e) {
+    // "Undefined symbol: N/UndefinedSymbol"
+}
+```
+
+### Best Practices
+
+1. **Organize by domain**: Keep related rules in the same module
+   ```
+   grammars/
+   ├── characters.grm
+   ├── places.grm
+   ├── actions.grm
+   └── main.grm
+   ```
+
+2. **Use meaningful aliases**: Choose clear module names
+   ```grm
+   import "characters.grm" as Char ;
+   import "locations.grm" as Loc ;  // Not "L" or "Places"
+   ```
+
+3. **Avoid circular imports**: Module A importing Module B, which imports Module A
+   ```php
+   // This will throw: RuntimeException "Circular import detected"
+   ```
+
+4. **Relative paths**: Use relative paths in imports; absolute paths work but are less portable
+   ```grm
+   import "colors.grm" as Color ;     // Relative to basePath
+   import "../shared/common.grm" as Common ;  // Parent directory
+   ```
+
 ## PML Grammar Syntax Reference
 
 | Feature | Syntax | Example | Result |

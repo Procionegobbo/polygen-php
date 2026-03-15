@@ -1,0 +1,3 @@
+First ::= alice | bob | charlie ;
+Last ::= smith | johnson | williams ;
+Full ::= First ^ ^ Last ;

@@ -183,7 +183,7 @@ final class Generator
      */
     private function genNonTerm(array $env, LabelSet $lbs, array $path): array
     {
-        $symbol = $path[0]; // For now, ignore full paths (TODO: namespace support)
+        $symbol = implode('/', $path);
 
         if (!isset($env[$symbol])) {
             throw new \RuntimeException("Undefined symbol: $symbol");
