@@ -1,0 +1,8 @@
+S ::= "from first example I got "
+FirstExample
+" and from second example I got "
+SecondExample;
+FirstExample := "picked character " Character;
+SecondExample := "picked character " Character;
+
+Character ::= a | b | c | d | e | f | g | h | i | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z;

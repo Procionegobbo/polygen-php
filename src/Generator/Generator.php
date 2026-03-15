@@ -21,6 +21,14 @@ final class Generator
 
     public function run(string $startSymbol = 'S', array $labelSet = []): string
     {
+        // Reset all sequence counters at the start of each run
+        // This ensures weighted selection is fresh for each generation
+        foreach ($this->decls as $decl) {
+            foreach ($decl->prod->seqs as $seq) {
+                $seq->counter = 0;
+            }
+        }
+
         $lbs = new LabelSet(...$labelSet);
         $env = $this->declare([], $lbs);
         $tokens = $this->genAtom($env, $lbs, new AtomNonTerm([$startSymbol]));
@@ -43,17 +51,27 @@ final class Generator
                 };
             } else {
                 // Assign: memoize on first call
-                $cache = null;
-                $newEnv[$decl->name] = function (LabelSet $lbs) use ($decl, &$newEnv, &$cache) {
-                    if ($cache === null) {
-                        $cache = $this->genProd($newEnv, $lbs, $decl->prod);
-                    }
-                    return $cache;
-                };
+                // Use a closure factory to ensure each assignment gets its own cache variable
+                $newEnv[$decl->name] = $this->createAssignmentClosure($decl, $newEnv);
             }
         }
 
         return $newEnv;
+    }
+
+    /**
+     * Factory method to create assignment closures with isolated cache variables.
+     * This prevents all assignments from sharing the same cache variable.
+     */
+    private function createAssignmentClosure(DeclNode $decl, array &$env): \Closure
+    {
+        $cache = null;
+        return function (LabelSet $lbs) use ($decl, &$env, &$cache) {
+            if ($cache === null) {
+                $cache = $this->genProd($env, $lbs, $decl->prod);
+            }
+            return $cache;
+        };
     }
 
     /**
@@ -235,13 +253,8 @@ final class Generator
                 };
             } else {
                 // Assign: memoize on first call
-                $cache = null;
-                $localEnv[$decl->name] = function (LabelSet $lbs) use ($decl, &$localEnv, &$cache) {
-                    if ($cache === null) {
-                        $cache = $this->genProd($localEnv, $lbs, $decl->prod);
-                    }
-                    return $cache;
-                };
+                // Use closure factory to ensure isolated cache variables
+                $localEnv[$decl->name] = $this->createAssignmentClosure($decl, $localEnv);
             }
         }
 
