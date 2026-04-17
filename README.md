@@ -1,4 +1,4 @@
-create# Polygen PHP 8.4+ Port
+# Polygen PHP 8.4+ Port
 
 A PHP 8.4+ implementation of Polygen - a random sentence generator based on BNF-like grammar definitions.
 
